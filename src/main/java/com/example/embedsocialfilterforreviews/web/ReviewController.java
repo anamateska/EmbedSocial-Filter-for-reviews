@@ -35,8 +35,8 @@ public class ReviewController {
             @RequestParam(defaultValue = "1") int minRating,
             Model model) throws IOException {
         File json = new File("reviews.json");
-        List<Review> reviews = new ArrayList<>(objectMapper.readValue(json, new TypeReference<List<Review>>(){}));
-        List<Review> orderedReviews = new ArrayList<>(reviewService.filterAndSortReviews(reviews, textPriority, ratingOrder, dateOrder, minRating));
+        List<Review> allReviews = new ArrayList<>(objectMapper.readValue(json, new TypeReference<List<Review>>(){}));
+        List<Review> orderedReviews = new ArrayList<>(reviewService.filterAndSortReviews(allReviews, textPriority, ratingOrder, dateOrder, minRating));
         model.addAttribute("orderedReviews", orderedReviews);
         return "reviews";
     }
