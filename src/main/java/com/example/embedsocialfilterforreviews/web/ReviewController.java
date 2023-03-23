@@ -1,12 +1,14 @@
 package com.example.embedsocialfilterforreviews.web;
 
 import com.example.embedsocialfilterforreviews.model.Review;
+import com.example.embedsocialfilterforreviews.service.ReviewService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,17 +19,25 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewController {
 
+    private final ReviewService reviewService;
     private ObjectMapper objectMapper;
 
-    public ReviewController() {
+    public ReviewController(ReviewService reviewService) {
+        this.reviewService = reviewService;
         this.objectMapper = new ObjectMapper();
     }
 
     @GetMapping
-    public String reviewsAndForm(Model model) throws IOException {
+    public String orderedReviews(
+            @RequestParam(defaultValue = "No") String textPriority,
+            @RequestParam(defaultValue = "Highest First") String ratingOrder,
+            @RequestParam(defaultValue = "Newest First") String dateOrder,
+            @RequestParam(defaultValue = "1") int minRating,
+            Model model) throws IOException {
         File json = new File("reviews.json");
         List<Review> reviews = new ArrayList<>(objectMapper.readValue(json, new TypeReference<List<Review>>(){}));
-        model.addAttribute("reviews", reviews);
+        List<Review> orderedReviews = new ArrayList<>(reviewService.filterAndSortReviews(reviews, textPriority, ratingOrder, dateOrder, minRating));
+        model.addAttribute("orderedReviews", orderedReviews);
         return "reviews";
     }
 

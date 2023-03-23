@@ -9,7 +9,49 @@
 </head>
 <body>
 
-<div class="container p-5">
+<div class="container my-3 px-5">
+
+    <h2 class="text-center my-3">FILTER REVIEWS</h2>
+
+    <form th:action="@{/reviews}" method="get">
+
+        <div class="form-group">
+
+            <label for="ratingOrder" class="my-2">Order by rating:</label>
+            <select class="form-select" id="ratingOrder" name="ratingOrder" th:selected="${ratingOrder}">
+                <option value="Highest First">Highest First</option>
+                <option value="Lowest First">Lowest First</option>
+            </select>
+
+            <label for="minRating" class="my-2">Minimum rating:</label>
+            <select class="form-select" id="minRating" name="minRating" th:selected="${minRating}">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <label for="dateOrder" class="my-2">Order by date:</label>
+            <select class="form-select" id="dateOrder" name="dateOrder" th:selected="${dateOrder}">
+                <option value="Newest First">Newest First</option>
+                <option value="Oldest First">Oldest First</option>
+            </select>
+
+            <label for="textPriority" class="my-2">Prioritize by text:</label>
+            <select class="form-select" id="textPriority" name="textPriority" th:selected="${textPriority}">
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+        </div>
+
+        <button type="submit" class="my-2 btn btn-block btn-primary">Filter</button>
+
+    </form>
+</div>
+
+<div class="container">
     <h2 class="text-center my-3">REVIEWS</h2>
     <table class="table table-light table-striped">
         <thead class="text-center">
@@ -21,7 +63,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="review : ${reviews}">
+        <tr th:each="review : ${orderedReviews}">
             <td class="text-center" th:text="${review.getId()}"></td>
             <td class="text-center" th:text="${review.getReviewCreatedOnDate()}"></td>
             <td class="text-center" th:text="${review.getRating()}"></td>
